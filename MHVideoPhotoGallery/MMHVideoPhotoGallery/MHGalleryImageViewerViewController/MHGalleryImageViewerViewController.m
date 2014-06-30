@@ -660,6 +660,7 @@
                 self.interactiveTransition = [MHTransitionDismissMHGallery new];
                 self.interactiveTransition.orientationTransformBeforeDismiss = [(NSNumber *)[self.navigationController.view valueForKeyPath:@"layer.transform.rotation.z"] floatValue];
                 self.interactiveTransition.interactive = YES;
+                self.interactiveTransition.moviePlayer = self.moviePlayer;
                
                 if (self.viewController.galleryViewController && self.viewController.galleryViewController.finishedCallback) {
                     self.viewController.galleryViewController.finishedCallback(self.pageIndex,self.imageView.image,self.interactiveTransition,self.viewController.viewModeForBarStyle);

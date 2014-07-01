@@ -388,7 +388,13 @@
     [self enableOrDisbaleBarbButtons];
     
     if (item.galleryType == MHGalleryTypeVideo) {
-        [self changeToPlayButton];
+        MHImageViewController *imageViewController = self.pageViewController.viewControllers.firstObject;
+        if (imageViewController.isPlayingVideo) {
+            [self changeToPauseButton];
+        } else {
+            [self changeToPlayButton];
+        }
+        
         self.toolbar.items = @[self.shareBarButton,flex,self.leftBarButton,flex,self.playStopBarButton,flex,self.rightBarButton,flex,fixed];
         self.playStopBarButton.enabled = YES;
     }else{
@@ -883,7 +889,6 @@
     [self.playButton setImage:MHGalleryImage(@"unplay")
                      forState:UIControlStateNormal];
     self.playButton.enabled = NO;
-    [(MHGalleryImageViewerViewController *)self.viewController changeToDisabledButton];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -895,8 +900,14 @@
         [[MHGallerySharedManager sharedManager] getURLForMediaPlayer:self.item.URLString successBlock:^(NSURL *URL, NSError *error) {
             if (error || URL == nil) {
                 [weakSelf changePlayButtonToUnPlay];
+                [(MHGalleryImageViewerViewController *)weakSelf.viewController changeToDisabledButton];
             }else{
                 [weakSelf addMoviePlayerToViewWithURL:URL];
+                
+                if ([weakSelf.viewController galleryViewController].autoplayVideo)
+                {
+                    [weakSelf playButtonPressed];
+                }
             }
         }];
     }

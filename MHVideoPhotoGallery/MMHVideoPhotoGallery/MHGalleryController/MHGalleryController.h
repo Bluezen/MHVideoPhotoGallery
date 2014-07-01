@@ -66,6 +66,8 @@
 @property (nonatomic,assign) MHGalleryViewMode                  presentationStyle;
 @property (nonatomic,assign) UIStatusBarStyle                   preferredStatusBarStyleMH;
 
+@property (nonatomic,assign) BOOL autoplayVideo;
+
 /**
  *  There are 3 types to present MHGallery. 
  *

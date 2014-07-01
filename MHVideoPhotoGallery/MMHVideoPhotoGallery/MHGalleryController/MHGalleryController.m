@@ -20,6 +20,8 @@
     self.transitionCustomization = MHTransitionCustomization.new;
     self.UICustomization = MHUICustomization.new;
     
+    self.autoplayVideo = NO;
+    
     self.overViewViewController= MHOverviewController.new;
     self.imageViewerViewController = MHGalleryImageViewerViewController.new;
     

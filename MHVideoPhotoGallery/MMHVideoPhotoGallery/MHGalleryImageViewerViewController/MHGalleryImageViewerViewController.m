@@ -250,6 +250,11 @@
     return ([touch.view isKindOfClass:UIControl.class] == NO);
 }
 
+-(void)changeToDisabledButton{
+    self.playStopBarButton.image = MHGalleryImage(@"play");
+    self.playStopBarButton.enabled = NO;
+}
+
 -(void)changeToPlayButton{
     self.playStopBarButton.image = MHGalleryImage(@"play");
 }
@@ -385,6 +390,7 @@
     if (item.galleryType == MHGalleryTypeVideo) {
         [self changeToPlayButton];
         self.toolbar.items = @[self.shareBarButton,flex,self.leftBarButton,flex,self.playStopBarButton,flex,self.rightBarButton,flex,fixed];
+        self.playStopBarButton.enabled = YES;
     }else{
         self.toolbar.items =@[self.shareBarButton,flex,self.leftBarButton,flex,self.rightBarButton,flex,fixed];
     }
@@ -876,6 +882,8 @@
 -(void)changePlayButtonToUnPlay{
     [self.playButton setImage:MHGalleryImage(@"unplay")
                      forState:UIControlStateNormal];
+    self.playButton.enabled = NO;
+    [(MHGalleryImageViewerViewController *)self.viewController changeToDisabledButton];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -885,7 +893,7 @@
     
     if (!self.moviePlayer && self.item.galleryType == MHGalleryTypeVideo) {
         [[MHGallerySharedManager sharedManager] getURLForMediaPlayer:self.item.URLString successBlock:^(NSURL *URL, NSError *error) {
-            if (error) {
+            if (error || URL == nil) {
                 [weakSelf changePlayButtonToUnPlay];
             }else{
                 [weakSelf addMoviePlayerToViewWithURL:URL];

@@ -41,6 +41,7 @@
 -(void)playStopButtonPressed;
 -(void)changeToPauseButton;
 -(void)changeToPlayButton;
+-(void)changeToDisabledButton;
 @end
 
 @interface MHImageViewController : UIViewController<UIScrollViewDelegate,UIGestureRecognizerDelegate>

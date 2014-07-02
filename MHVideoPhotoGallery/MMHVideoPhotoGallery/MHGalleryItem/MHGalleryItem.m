@@ -45,7 +45,9 @@
     self.thumbnailURL = URLString;
     self.description = nil;
     self.galleryType = galleryType;
-    self.attributedString = nil;
+    self.descriptionAttributedString = nil;
+    self.title = nil;
+    self.titleAttributedString = nil;
     return self;
 }
 +(instancetype)itemWithURL:(NSString *)URLString
@@ -65,7 +67,9 @@
     self.thumbnailURL = thumbnailURL;
     self.description = nil;
     self.galleryType = MHGalleryTypeImage;
-    self.attributedString = nil;
+    self.descriptionAttributedString = nil;
+    self.title = nil;
+    self.titleAttributedString = nil;
     return self;
 }
 

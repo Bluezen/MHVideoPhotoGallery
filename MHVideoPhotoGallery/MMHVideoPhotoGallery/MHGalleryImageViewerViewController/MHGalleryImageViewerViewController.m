@@ -295,8 +295,8 @@
         MHGalleryItem *item = [self itemForIndex:index];
         self.descriptionView.text = item.description;
         
-        if (item.attributedString) {
-            self.descriptionView.attributedText = item.attributedString;
+        if (item.descriptionAttributedString) {
+            self.descriptionView.attributedText = item.descriptionAttributedString;
         }
         CGSize size = [self.descriptionView sizeThatFits:CGSizeMake(self.view.frame.size.width-20, MAXFLOAT)];
         
@@ -319,10 +319,6 @@
     self.userScrolls = YES;
 }
 
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    [self updateTitleAndDescriptionForScrollView:scrollView];
-}
-
 -(void)updateTitleAndDescriptionForScrollView:(UIScrollView*)scrollView{
     NSInteger pageIndex = self.pageIndex;
     if (scrollView.contentOffset.x > (self.view.frame.size.width+self.view.frame.size.width/2)) {
@@ -336,8 +332,30 @@
 }
 
 -(void)updateTitleForIndex:(NSInteger)pageIndex{
-    NSString *localizedString  = MHGalleryLocalizedString(@"imagedetail.title.current");
-    self.navigationItem.title = [NSString stringWithFormat:localizedString,@(pageIndex+1),@(self.numberOfGalleryItems)];
+    
+    NSAssert(pageIndex < self.numberOfGalleryItems, @"pageIndex must be inferior to numberOfGalleryItems in order to updateTitleForIndex");
+    
+    if (pageIndex < self.numberOfGalleryItems) {
+        
+        MHGalleryItem *item = [self itemForIndex:pageIndex];
+        
+        if (item.titleAttributedString) {
+            UILabel *label = (UILabel *)self.navigationItem.titleView;
+            if (label == nil) {
+                label = [[UILabel alloc] init];
+                self.navigationItem.titleView = label;
+            }
+            label.attributedText = item.titleAttributedString;
+            [label sizeToFit];
+        } else if (item.title) {
+            self.navigationItem.titleView = nil;
+            self.navigationItem.title = item.title;
+        } else {
+            self.navigationItem.titleView = nil;
+            NSString *localizedString  = MHGalleryLocalizedString(@"imagedetail.title.current");
+            self.navigationItem.title = [NSString stringWithFormat:localizedString,@(pageIndex+1),@(self.numberOfGalleryItems)];
+        }
+    }
 }
 
 

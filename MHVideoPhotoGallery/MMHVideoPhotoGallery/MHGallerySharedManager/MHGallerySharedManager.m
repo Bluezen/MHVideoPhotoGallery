@@ -98,16 +98,19 @@
             
             AVAssetImageGeneratorCompletionHandler handler = ^(CMTime requestedTime, CGImageRef im, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error){
                 
-                if (result != AVAssetImageGeneratorSucceeded) {
+                if (result != AVAssetImageGeneratorSucceeded || im == nil) {
                     dispatch_async(dispatch_get_main_queue(), ^(void){
                         succeedBlock(nil,0,error);
                     });
                 }else{
-                    [[SDImageCache sharedImageCache] storeImage:[UIImage imageWithCGImage:im]
-                                                         forKey:urlString];
-                    dispatch_async(dispatch_get_main_queue(), ^(void){
-                        succeedBlock([UIImage imageWithCGImage:im],videoDurationTimeInSeconds,nil);
-                    });
+                    UIImage *image = [UIImage imageWithCGImage:im];
+                    if (image != nil) {
+                        [[SDImageCache sharedImageCache] storeImage:image
+                                                             forKey:urlString];
+                        dispatch_async(dispatch_get_main_queue(), ^(void){
+                            succeedBlock(image,videoDurationTimeInSeconds,nil);
+                        });
+                    }
                 }
             };
             if (self.webThumbQuality == MHWebThumbQualityHD720) {

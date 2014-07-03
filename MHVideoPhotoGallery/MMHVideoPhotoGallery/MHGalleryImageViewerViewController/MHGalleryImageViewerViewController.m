@@ -319,6 +319,10 @@
     self.userScrolls = YES;
 }
 
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    [self updateTitleAndDescriptionForScrollView:scrollView];
+}
+
 -(void)updateTitleAndDescriptionForScrollView:(UIScrollView*)scrollView{
     NSInteger pageIndex = self.pageIndex;
     if (scrollView.contentOffset.x > (self.view.frame.size.width+self.view.frame.size.width/2)) {

@@ -178,7 +178,7 @@
         self.toTransform = self.startTransform;
     }
     
-    if (imageViewerCurrent.isPlayingVideo && imageViewerCurrent.moviePlayer) {
+    if (imageViewerCurrent.isPlayingVideo && imageViewerCurrent.moviePlayer && imageViewerCurrent.moviePlayer.naturalSize.height > 0 && imageViewerCurrent.moviePlayer.naturalSize.width > 0) {
         self.moviePlayer = imageViewerCurrent.moviePlayer;
         [self.moviePlayer.view setFrame:AVMakeRectWithAspectRatioInsideRect(imageViewerCurrent.moviePlayer.naturalSize,fromViewController.view.bounds)];
         
@@ -192,7 +192,7 @@
     }
     self.navFrame = fromViewController.navigationBar.frame;
     if (self.toTransform != self.orientationTransformBeforeDismiss) {
-        if (self.moviePlayer) {
+        if (self.moviePlayer && imageViewerCurrent.moviePlayer.naturalSize.height > 0 && imageViewerCurrent.moviePlayer.naturalSize.width > 0) {
             [self.moviePlayer.view setFrame:AVMakeRectWithAspectRatioInsideRect(imageViewerCurrent.moviePlayer.naturalSize,CGRectMake(0, 0, fromViewController.view.bounds.size.width, fromViewController.view.bounds.size.height))];
             self.moviePlayer.view.transform = CGAffineTransformMakeRotation(self.orientationTransformBeforeDismiss);
             self.moviePlayer.view.center = UIApplication.sharedApplication.keyWindow.center;

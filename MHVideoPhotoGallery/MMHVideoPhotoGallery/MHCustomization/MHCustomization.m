@@ -30,6 +30,7 @@
     self = [super init];
     if (self) {
         self.barButtonsTintColor = nil;
+        self.videoProgressSliderTintColor = [UIColor blackColor];
         self.barStyle = UIBarStyleDefault;
         self.barTintColor = nil;
 		self.showMHShareViewInsteadOfActivityViewController = YES;

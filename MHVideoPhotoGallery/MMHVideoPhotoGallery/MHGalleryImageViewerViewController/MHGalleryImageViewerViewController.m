@@ -337,7 +337,7 @@
 
 -(void)updateTitleForIndex:(NSInteger)pageIndex{
     
-    NSAssert(pageIndex < self.numberOfGalleryItems, @"pageIndex must be inferior to numberOfGalleryItems in order to updateTitleForIndex");
+//    NSAssert(pageIndex < self.numberOfGalleryItems, @"pageIndex must be inferior to numberOfGalleryItems in order to updateTitleForIndex");
     
     if (pageIndex < self.numberOfGalleryItems) {
         
@@ -827,16 +827,17 @@
             self.videoProgressView.layer.borderWidth =0.5;
             self.videoProgressView.layer.borderColor =[UIColor colorWithWhite:0 alpha:0.3].CGColor;
             self.videoProgressView.trackTintColor =[UIColor clearColor];
-            self.videoProgressView.progressTintColor =[UIColor colorWithWhite:0 alpha:0.3];
+            self.videoProgressView.progressTintColor = [self.viewController.UICustomization.videoProgressSliderTintColor colorWithAlphaComponent:0.5f];
             self.videoProgressView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
             [self.moviePlayerToolBarTop addSubview:self.videoProgressView];
             
             self.slider = [UISlider.alloc initWithFrame:CGRectMake(55, 0, self.view.frame.size.width-110, 44)];
             self.slider.maximumValue =10;
             self.slider.minimumValue =0;
-            self.slider.minimumTrackTintColor=[UIColor blackColor];
-            self.slider.maximumTrackTintColor =[UIColor clearColor];
+            self.slider.minimumTrackTintColor = self.viewController.UICustomization.videoProgressSliderTintColor;
+            self.slider.maximumTrackTintColor = [self.viewController.UICustomization.videoProgressSliderTintColor colorWithAlphaComponent:0.2f];
             [self.slider setThumbImage:MHGalleryImage(@"sliderPoint") forState:UIControlStateNormal];
+//            self.slider.thumbTintColor = self.viewController.UICustomization.barButtonsTintColor;
             [self.slider addTarget:self action:@selector(sliderDidChange:) forControlEvents:UIControlEventValueChanged];
             [self.slider addTarget:self action:@selector(sliderDidDragExit:) forControlEvents:UIControlEventTouchUpInside];
             self.slider.autoresizingMask =UIViewAutoresizingFlexibleWidth;
@@ -845,12 +846,14 @@
             self.leftSliderLabel = [UILabel.alloc initWithFrame:CGRectMake(8, 0, 40, 43)];
             self.leftSliderLabel.font =[UIFont systemFontOfSize:14];
             self.leftSliderLabel.text =@"00:00";
+            self.leftSliderLabel.textColor = self.viewController.UICustomization.videoProgressSliderTintColor;
             [self.moviePlayerToolBarTop addSubview:self.leftSliderLabel];
             
             self.rightSliderLabel = [UILabel.alloc initWithFrame:CGRectZero];
             self.rightSliderLabel.frame = CGRectMake(self.viewController.view.frame.size.width-50, 0, 50, 43);
             self.rightSliderLabel.font = [UIFont systemFontOfSize:14];
             self.rightSliderLabel.text = @"-00:00";
+            self.rightSliderLabel.textColor = self.viewController.UICustomization.videoProgressSliderTintColor;
             self.rightSliderLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
             [self.moviePlayerToolBarTop addSubview:self.rightSliderLabel];
             
@@ -1373,6 +1376,14 @@
 
 -(void)handelImageTap:(UIGestureRecognizer *)gestureRecognizer{
     if (!self.viewController.isHiddingToolBarAndNavigationBar) {
+        
+        CGPoint tappedLocation = [gestureRecognizer locationInView:self.view];
+        
+        // We do nothing if tap occured on the progressView, we do not want to prevent sliderDidDragExit from being fired if user is sliding the progressView slider
+        if (CGRectContainsPoint(self.moviePlayerToolBarTop.frame, tappedLocation)) {
+            return;
+        }
+        
         [UIView animateWithDuration:0.3 animations:^{
             
             if (self.moviePlayerToolBarTop) {

@@ -68,10 +68,15 @@
     
     MHGalleryItem *landschaft10 = [[MHGalleryItem alloc]initWithURL:@"http://4.bp.blogspot.com/-8O0ZkAgb6Bo/Ulf_80tUN6I/AAAAAAAAH34/I1L2lKjzE9M/s1600/Beautiful-Scenery-Wallpapers.jpg"
                                                         galleryType:MHGalleryTypeImage];
+    landschaft.titleAttributedString = [[NSAttributedString alloc] initWithString:@"another title with attributed string" attributes:@{NSForegroundColorAttributeName: [UIColor redColor]}];
 
+    MHGalleryItem *youtube240pOnly = [MHGalleryItem itemWithYoutubeVideoID:@"sn_GCGJCxo8"];
+    youtube240pOnly.title = @"Simple title";
     
+    MHGalleryItem *youtubeBlockedVideo = [MHGalleryItem itemWithYoutubeVideoID:@"UKyKI2Gg8HU"];
+    youtubeBlockedVideo.titleAttributedString = [[NSAttributedString alloc] initWithString:@"title with attributed string" attributes:@{NSForegroundColorAttributeName: [UIColor redColor]}];
     
-    self.galleryDataSource = @[landschaft,landschaft1,landschaft2,landschaft3,landschaft4,landschaft5,vimeo0,vimeo1,vimeo3,landschaft6,landschaft7,youtube,landschaft8,landschaft9,landschaft10];
+    self.galleryDataSource = @[youtube240pOnly, youtubeBlockedVideo, landschaft,landschaft1,landschaft2,landschaft3,landschaft4,landschaft5,vimeo0,vimeo1,vimeo3,landschaft6,landschaft7,youtube,landschaft8,landschaft9,landschaft10];
 
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{

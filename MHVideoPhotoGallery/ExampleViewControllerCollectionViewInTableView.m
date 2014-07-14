@@ -135,7 +135,7 @@
     [string setAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:15]} range:NSMakeRange(0, string.length)];
     [string setAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:17]} range:NSMakeRange(0, 9)];
     
-    landschaft10.attributedString = string;
+    landschaft10.descriptionAttributedString = string;
     
     self.galleryDataSource = @[@[landschaft,landschaft1,landschaft2,landschaft3,landschaft4,landschaft5,landschaft22,landschaft21,landschaft6,landschaft7,landschaft8,landschaft9,landschaft10,landschaft11,landschaft12,landschaft13,landschaft14,landschaft15,landschaft16,landschaft17,landschaft18,landschaft19,landschaft20],
                                @[vimeo3,youtube,vimeo0,vimeo1,landschaft9,landschaft6,landschaft5,landschaft4,landschaft3,landschaft2,landschaft,landschaft1],

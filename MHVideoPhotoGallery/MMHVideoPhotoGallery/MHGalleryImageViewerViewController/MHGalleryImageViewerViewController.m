@@ -575,7 +575,7 @@
 @end
 
 @interface MHImageViewController ()
-@property (nonatomic, strong) UIButton                 *moviewPlayerButtonBehinde;
+@property (nonatomic, strong) UIButton                 *moviePlayerButtonBehind;
 @property (nonatomic, strong) UIToolbar                *moviePlayerToolBarTop;
 @property (nonatomic, strong) UISlider                 *slider;
 @property (nonatomic, strong) UIProgressView           *videoProgressView;
@@ -1081,17 +1081,17 @@
     self.moviePlayer.view.hidden =NO;
     [self.view bringSubviewToFront:self.moviePlayer.view];
     
-    self.moviewPlayerButtonBehinde = [UIButton.alloc initWithFrame:self.view.bounds];
-    [self.moviewPlayerButtonBehinde addTarget:self action:@selector(handelImageTap:) forControlEvents:UIControlEventTouchUpInside];
-    self.moviewPlayerButtonBehinde.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    self.moviePlayerButtonBehind = [UIButton.alloc initWithFrame:self.view.bounds];
+    [self.moviePlayerButtonBehind addTarget:self action:@selector(handelMoviePlayerButtonBehindTap:) forControlEvents:UIControlEventTouchUpInside];
+    self.moviePlayerButtonBehind.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     
     [self.view bringSubviewToFront:self.scrollView];
-    [self.view addSubview:self.moviewPlayerButtonBehinde];
+    [self.view addSubview:self.moviePlayerButtonBehind];
     [self.view bringSubviewToFront:self.moviePlayerToolBarTop];
     [self.view bringSubviewToFront:self.playButton];
     
     if(self.viewController.transitionCustomization.interactiveDismiss){
-        [self.moviewPlayerButtonBehinde addGestureRecognizer:self.pan];
+        [self.moviePlayerButtonBehind addGestureRecognizer:self.pan];
     }
     
     if(self.playingVideo){
@@ -1206,7 +1206,7 @@
     [self addPlayButtonToView];
     self.playButton.hidden =NO;
     self.playButton.frame = CGRectMake(self.viewController.view.frame.size.width/2-36, self.viewController.view.frame.size.height/2-36, 72, 72);
-    [self.moviewPlayerButtonBehinde removeFromSuperview];
+    [self.moviePlayerButtonBehind removeFromSuperview];
     [self.viewController changeToPlayButton];
     [self updateTimerLabels];
     [self.slider setValue:0 animated:NO];
@@ -1273,7 +1273,7 @@
 
 -(void)bringMoviePlayerToFront{
     [self.view bringSubviewToFront:self.moviePlayer.view];
-    [self.view bringSubviewToFront:self.moviewPlayerButtonBehinde];
+    [self.view bringSubviewToFront:self.moviePlayerButtonBehind];
     [self.view bringSubviewToFront:self.moviePlayerToolBarTop];
 }
 
@@ -1393,34 +1393,55 @@
             return;
         }
         
-        [UIView animateWithDuration:0.3 animations:^{
-            
-            if (self.moviePlayerToolBarTop) {
-                self.moviePlayerToolBarTop.alpha =0;
-            }
-            [self changeUIForViewMode:MHGalleryViewModeImageViewerNavigationBarHidden];
-        } completion:^(BOOL finished) {
-            
-            self.viewController.hiddingToolBarAndNavigationBar = YES;
-            self.navigationController.navigationBar.hidden  =YES;
-            self.viewController.toolbar.hidden =YES;
-        }];
+        [self hideToolBarAndNavigationBar];
+        
     }else{
-        self.navigationController.navigationBar.hidden = NO;
-        self.viewController.toolbar.hidden = NO;
-        
-        [UIView animateWithDuration:0.3 animations:^{
-            [self changeUIForViewMode:MHGalleryViewModeImageViewerNavigationBarShown];
-            if (self.moviePlayerToolBarTop) {
-                if (self.item.galleryType == MHGalleryTypeVideo) {
-                    self.moviePlayerToolBarTop.alpha =1;
-                }
-            }
-        } completion:^(BOOL finished) {
-            self.viewController.hiddingToolBarAndNavigationBar = NO;
-        }];
-        
+        [self displayToolBarAndNavigationBar];
     }
+}
+
+-(void)handelMoviePlayerButtonBehindTap:(UIButton *)button
+{
+    if (!self.viewController.isHiddingToolBarAndNavigationBar) {
+        
+        [self hideToolBarAndNavigationBar];
+        
+    }else{
+        [self displayToolBarAndNavigationBar];
+    }
+}
+
+-(void)displayToolBarAndNavigationBar
+{
+    self.navigationController.navigationBar.hidden = NO;
+    self.viewController.toolbar.hidden = NO;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        [self changeUIForViewMode:MHGalleryViewModeImageViewerNavigationBarShown];
+        if (self.moviePlayerToolBarTop) {
+            if (self.item.galleryType == MHGalleryTypeVideo) {
+                self.moviePlayerToolBarTop.alpha =1;
+            }
+        }
+    } completion:^(BOOL finished) {
+        self.viewController.hiddingToolBarAndNavigationBar = NO;
+    }];
+}
+
+-(void)hideToolBarAndNavigationBar
+{
+    [UIView animateWithDuration:0.3 animations:^{
+        
+        if (self.moviePlayerToolBarTop) {
+            self.moviePlayerToolBarTop.alpha =0;
+        }
+        [self changeUIForViewMode:MHGalleryViewModeImageViewerNavigationBarHidden];
+    } completion:^(BOOL finished) {
+        
+        self.viewController.hiddingToolBarAndNavigationBar = YES;
+        self.navigationController.navigationBar.hidden  =YES;
+        self.viewController.toolbar.hidden =YES;
+    }];
 }
 
 - (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer {

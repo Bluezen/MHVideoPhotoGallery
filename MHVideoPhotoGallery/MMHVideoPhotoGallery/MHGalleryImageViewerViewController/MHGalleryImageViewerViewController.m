@@ -189,9 +189,9 @@
     
     CGSize size = [self.descriptionView sizeThatFits:CGSizeMake(self.view.frame.size.width-20, MAXFLOAT)];
     
-    self.descriptionView.frame = CGRectMake(10, self.view.frame.size.height -size.height-44, self.view.frame.size.width-20, size.height);
+    self.descriptionView.frame = CGRectMake(10, self.view.frame.size.height -size.height-MHToolbarHeightForOrientation(self.currentOrientation), self.view.frame.size.width-20, size.height);
     if (self.descriptionView.text.length >0) {
-        self.descriptionViewBackground.frame = CGRectMake(0, self.view.frame.size.height -size.height-44, self.view.frame.size.width, size.height);
+        self.descriptionViewBackground.frame = CGRectMake(0, self.view.frame.size.height -size.height-MHToolbarHeightForOrientation(self.currentOrientation), self.view.frame.size.width, size.height);
     }else{
         self.descriptionViewBackground.hidden =YES;
     }
@@ -300,10 +300,10 @@
         }
         CGSize size = [self.descriptionView sizeThatFits:CGSizeMake(self.view.frame.size.width-20, MAXFLOAT)];
         
-        self.descriptionView.frame = CGRectMake(10, self.view.frame.size.height -size.height-44, self.view.frame.size.width-20, size.height);
+        self.descriptionView.frame = CGRectMake(10, self.view.frame.size.height -size.height-MHToolbarHeightForOrientation(self.currentOrientation), self.view.frame.size.width-20, size.height);
         if (self.descriptionView.text.length >0) {
             self.descriptionViewBackground.hidden =NO;
-            self.descriptionViewBackground.frame = CGRectMake(0, self.view.frame.size.height -size.height-44, self.view.frame.size.width, size.height);
+            self.descriptionViewBackground.frame = CGRectMake(0, self.view.frame.size.height -size.height-MHToolbarHeightForOrientation(self.currentOrientation), self.view.frame.size.width, size.height);
         }else{
             self.descriptionViewBackground.hidden =YES;
         }
@@ -566,7 +566,15 @@
 }
 
 -(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
-    self.toolbar.frame = CGRectMake(0, self.view.frame.size.height-MHToolbarHeightForOrientation(self.currentOrientation), self.view.frame.size.width, MHToolbarHeightForOrientation(self.currentOrientation));
+    CGFloat toolbarHeight = MHToolbarHeightForOrientation([UIApplication sharedApplication].statusBarOrientation);
+    
+    self.toolbar.frame = CGRectMake(0, self.view.frame.size.height-toolbarHeight, self.view.frame.size.width, toolbarHeight);
+    
+    self.descriptionView.frame = CGRectMake(self.descriptionView.frame.origin.x, self.view.frame.size.height -self.descriptionView.frame.size.height -toolbarHeight, self.descriptionView.frame.size.width, self.descriptionView.frame.size.height);
+    if ( !self.descriptionViewBackground.hidden) {
+        self.descriptionViewBackground.frame = CGRectMake(0.,CGRectGetMinY(self.toolbar.frame) - CGRectGetHeight(self.descriptionViewBackground.frame), CGRectGetWidth(self.descriptionViewBackground.frame), CGRectGetHeight(self.descriptionViewBackground.frame));
+    }
+    
     self.pageViewController.view.bounds = self.view.bounds;
     [self.pageViewController.view.subviews.firstObject setFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) ];
     

@@ -846,6 +846,18 @@
             }else if (item.image) {
                 [self addDataToDownloadArray:item.image];
             }else{
+<<<<<<< HEAD
+                [SDWebImageManager.sharedManager downloadImageWithURL:[NSURL URLWithString:item.URLString]
+                                                              options:SDWebImageContinueInBackground
+                                                             progress:nil
+                                                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                                
+                                                                MHImageURL *mhImageURL = [MHImageURL.alloc initWithURL:item.URLString
+                                                                                                                 image:image];
+                                                                
+                                                                [weakSelf addDataToDownloadArray:mhImageURL];
+                                                            }];
+=======
                 
                 [SDWebImageManager.sharedManager downloadImageWithURL:[NSURL URLWithString:item.URLString] options:SDWebImageContinueInBackground progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                     
@@ -853,6 +865,7 @@
                                                                      image:image];
                     [weakSelf addDataToDownloadArray:imageURLMH];
                 }];
+>>>>>>> mario/master
             }
         }
     }

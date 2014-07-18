@@ -408,8 +408,8 @@
                                                                         action:nil];
     
     UIBarButtonItem *fixed = [UIBarButtonItem.alloc initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                                                        target:self
-                                                                        action:nil];
+                                                                         target:self
+                                                                         action:nil];
     fixed.width = 30;
     
     [self enableOrDisbaleBarbButtons];
@@ -477,6 +477,10 @@
         return;
     }
     
+    if (!imageViewController) {
+        return;
+    }
+
     __weak typeof(self) weakSelf = self;
     
     [self.pageViewController setViewControllers:@[imageViewController] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL finished) {
@@ -497,10 +501,18 @@
     if (indexPage+1 == self.numberOfGalleryItems-1) {
         self.rightBarButton.enabled = NO;
     }
+<<<<<<< HEAD
+    
+    if (!imageViewController) {
+        return;
+    }
+
+=======
     if (!imageViewController) {
         return;
     }
     
+>>>>>>> mario/master
     __weak typeof(self) weakSelf = self;
     
     [self.pageViewController setViewControllers:@[imageViewController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL finished) {
@@ -714,8 +726,12 @@
                 self.interactiveTransition = [MHTransitionDismissMHGallery new];
                 self.interactiveTransition.orientationTransformBeforeDismiss = [(NSNumber *)[self.navigationController.view valueForKeyPath:@"layer.transform.rotation.z"] floatValue];
                 self.interactiveTransition.interactive = YES;
+<<<<<<< HEAD
                 self.interactiveTransition.moviePlayer = self.moviePlayer;
                
+=======
+                
+>>>>>>> mario/master
                 if (self.viewController.galleryViewController && self.viewController.galleryViewController.finishedCallback) {
                     self.viewController.galleryViewController.finishedCallback(self.pageIndex,self.imageView.image,self.interactiveTransition,self.viewController.viewModeForBarStyle);
                 }

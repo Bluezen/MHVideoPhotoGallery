@@ -12,10 +12,14 @@
 #import <ImageIO/ImageIO.h>
 #import "SDWebImageManager.h"
 
+<<<<<<< HEAD:External/SDWEBImage/SDWebImageDownloaderOperation.m
 @interface SDWebImageDownloaderOperation () <NSURLConnectionDataDelegate> {
     BOOL _executing;
     BOOL _finished;
 }
+=======
+@interface SDWebImageDownloaderOperation () <NSURLConnectionDataDelegate>
+>>>>>>> mario/master:MHVideoPhotoGallery/SDWebImageDownloaderOperation.m
 
 @property (copy, nonatomic) SDWebImageDownloaderProgressBlock progressBlock;
 @property (copy, nonatomic) SDWebImageDownloaderCompletedBlock completedBlock;
@@ -181,22 +185,28 @@
     [self didChangeValueForKey:@"isFinished"];
 }
 
+<<<<<<< HEAD:External/SDWEBImage/SDWebImageDownloaderOperation.m
 - (BOOL)isFinished
 {
     return _finished;
 }
 
+=======
+>>>>>>> mario/master:MHVideoPhotoGallery/SDWebImageDownloaderOperation.m
 - (void)setExecuting:(BOOL)executing {
     [self willChangeValueForKey:@"isExecuting"];
     _executing = executing;
     [self didChangeValueForKey:@"isExecuting"];
 }
 
+<<<<<<< HEAD:External/SDWEBImage/SDWebImageDownloaderOperation.m
 - (BOOL)isExecuting
 {
     return _executing;
 }
 
+=======
+>>>>>>> mario/master:MHVideoPhotoGallery/SDWebImageDownloaderOperation.m
 - (BOOL)isConcurrent {
     return YES;
 }

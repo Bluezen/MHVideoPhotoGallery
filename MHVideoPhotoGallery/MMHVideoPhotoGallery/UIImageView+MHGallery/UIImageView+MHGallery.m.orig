@@ -66,10 +66,17 @@
         [self sd_setImageWithURL:[NSURL URLWithString:toLoadURL]
                 placeholderImage:[SDImageCache.sharedImageCache imageFromDiskCacheForKey:placeholderURL]
                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+<<<<<<< HEAD
+            if (succeedBlock) {
+                succeedBlock (image,error);
+            }
+        }];
+=======
                            if (succeedBlock) {
                                succeedBlock (image,error);
                            }
                        }];
+>>>>>>> mario/master
     }
 }
 

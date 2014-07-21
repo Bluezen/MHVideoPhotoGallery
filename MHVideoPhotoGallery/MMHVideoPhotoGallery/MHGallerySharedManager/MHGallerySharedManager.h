@@ -84,10 +84,10 @@ typedef NS_ENUM(NSUInteger, MHYoutubeThumbQuality) {
  *
  *  @param urlString    URL as a string
  *  @param duration     the position on whicht the Thumbnail should be created
- *  @param succeedBlock returns the image the duration of the video and an error
+ *  @param succeedBlock returns the image the duration of the video, an error and the imageURL
  */
 -(void)startDownloadingThumbImage:(NSString*)urlString
-                     successBlock:(void (^)(UIImage *image,NSUInteger videoDuration,NSError *error))succeedBlock;
+                     successBlock:(void (^)(UIImage *image,NSUInteger videoDuration,NSError *error,NSURL *imageURL))succeedBlock;
 
 
 -(BOOL)isUIViewControllerBasedStatusBarAppearance;

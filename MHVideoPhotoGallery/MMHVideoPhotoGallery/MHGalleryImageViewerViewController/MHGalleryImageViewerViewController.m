@@ -900,7 +900,7 @@
             
         }else{
             [MHGallerySharedManager.sharedManager startDownloadingThumbImage:self.item.URLString
-                                                                successBlock:^(UIImage *image,NSUInteger videoDuration,NSError *error) {
+                                                                successBlock:^(UIImage *image,NSUInteger videoDuration,NSError *error, NSURL *imageURL) {
                                                                     if (!error) {
                                                                         [weakSelf handleGeneratedThumb:image
                                                                                          videoDuration:videoDuration

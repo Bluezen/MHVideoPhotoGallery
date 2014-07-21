@@ -83,7 +83,7 @@
     
     if (galleryItem.galleryType == MHGalleryTypeVideo) {
         [MHGallerySharedManager.sharedManager startDownloadingThumbImage:galleryItem.URLString
-                                                            successBlock:^(UIImage *image,NSUInteger videoDuration,NSError *error) {
+                                                            successBlock:^(UIImage *image,NSUInteger videoDuration,NSError *error, NSURL *imageURL) {
                                                                 if (error) {
                                                                     weakSelf.thumbnail.backgroundColor = UIColor.whiteColor;
                                                                     weakSelf.thumbnail.image = MHGalleryImage(@"error");

@@ -13,12 +13,12 @@
 @implementation UIImageView (MHGallery)
 
 -(void)setThumbWithURL:(NSString*)URL
-          successBlock:(void (^)(UIImage *image,NSUInteger videoDuration,NSError *error))succeedBlock{
+          successBlock:(void (^)(UIImage *image,NSUInteger videoDuration,NSError *error, NSURL *imageURL))succeedBlock{
     
     __weak typeof(self) weakSelf = self;
     
     [MHGallerySharedManager.sharedManager startDownloadingThumbImage:URL
-                                                        successBlock:^(UIImage *image, NSUInteger videoDuration, NSError *error) {
+                                                        successBlock:^(UIImage *image, NSUInteger videoDuration, NSError *error, NSURL *imageURL) {
                                                             
                                                             if (!weakSelf) return;
                                                             dispatch_main_sync_safe(^{
@@ -27,7 +27,7 @@
                                                                     weakSelf.image = image;
                                                                     [weakSelf setNeedsLayout];
                                                                 }
-                                                                if (succeedBlock) {                                                                     succeedBlock(image,videoDuration,error);
+                                                                if (succeedBlock) {                                                                     succeedBlock(image,videoDuration,error,imageURL);
                                                                 }
                                                             });
                                                         }];

@@ -69,31 +69,6 @@
     return self.galleryItems.count;
 }
 
--(void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-    
-    self.galleryDelegate = nil;
-    self.dataSource = nil;
-    self.presentingFromImageView = nil;
-    self.UICustomization = nil;
-    self.interactivePresentationTransition = nil;
-    
-    for (MHImageViewController *iVC in self.imageViewerViewController.pageViewController.viewControllers) {
-        [iVC removeAllMoviePlayerViewsAndNotifications];
-        iVC.item = nil;
-        iVC.viewController = nil;
-    }
-    
-    self.imageViewerViewController.UICustomization = nil;
-    self.imageViewerViewController.transitionCustomization = nil;
-    
-    
-    [self.imageViewerViewController removeFromParentViewController];
-    self.imageViewerViewController = nil;
-    
-}
-
 @end
 
 

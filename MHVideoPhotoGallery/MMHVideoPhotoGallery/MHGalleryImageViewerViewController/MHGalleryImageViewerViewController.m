@@ -72,9 +72,10 @@
     MHTransitionDismissMHGallery *dismissTransiton = [MHTransitionDismissMHGallery new];
     dismissTransiton.orientationTransformBeforeDismiss = [(NSNumber *)[self.navigationController.view valueForKeyPath:@"layer.transform.rotation.z"] floatValue];
     imageViewer.interactiveTransition = dismissTransiton;
-    
-    if (self.galleryViewController && self.galleryViewController.finishedCallback) {
-        self.galleryViewController.finishedCallback(self.pageIndex,imageViewer.imageView.image,dismissTransiton,self.viewModeForBarStyle);
+
+    MHGalleryController *galleryViewController = [self galleryViewController];
+    if (galleryViewController.finishedCallback) {
+        galleryViewController.finishedCallback(self.pageIndex,imageViewer.imageView.image,dismissTransiton,self.viewModeForBarStyle);
     }
 }
 
@@ -418,10 +419,9 @@
         MHImageViewController *imageViewController = self.pageViewController.viewControllers.firstObject;
         if (imageViewController.isPlayingVideo) {
             [self changeToPauseButton];
-        } else {
+        }else{
             [self changeToPlayButton];
         }
-        
         self.toolbar.items = @[self.shareBarButton,flex,self.leftBarButton,flex,self.playStopBarButton,flex,self.rightBarButton,flex,fixed];
         self.playStopBarButton.enabled = YES;
     }else{
@@ -715,9 +715,10 @@
                 self.interactiveTransition.orientationTransformBeforeDismiss = [(NSNumber *)[self.navigationController.view valueForKeyPath:@"layer.transform.rotation.z"] floatValue];
                 self.interactiveTransition.interactive = YES;
                 self.interactiveTransition.moviePlayer = self.moviePlayer;
-               
-                if (self.viewController.galleryViewController && self.viewController.galleryViewController.finishedCallback) {
-                    self.viewController.galleryViewController.finishedCallback(self.pageIndex,self.imageView.image,self.interactiveTransition,self.viewController.viewModeForBarStyle);
+                
+                MHGalleryController *galleryViewController = [self.viewController galleryViewController];
+                if (galleryViewController.finishedCallback) {
+                    galleryViewController.finishedCallback(self.pageIndex,self.imageView.image,self.interactiveTransition,self.viewController.viewModeForBarStyle);
                 }
                 
             }else{
@@ -857,7 +858,6 @@
             self.slider.minimumTrackTintColor = self.viewController.UICustomization.videoProgressSliderTintColor;
             self.slider.maximumTrackTintColor = [self.viewController.UICustomization.videoProgressSliderTintColor colorWithAlphaComponent:0.2f];
             [self.slider setThumbImage:MHGalleryImage(@"sliderPoint") forState:UIControlStateNormal];
-//            self.slider.thumbTintColor = self.viewController.UICustomization.barButtonsTintColor;
             [self.slider addTarget:self action:@selector(sliderDidChange:) forControlEvents:UIControlEventValueChanged];
             [self.slider addTarget:self action:@selector(sliderDidDragExit:) forControlEvents:UIControlEventTouchUpInside];
             self.slider.autoresizingMask =UIViewAutoresizingFlexibleWidth;

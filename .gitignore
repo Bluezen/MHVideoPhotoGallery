@@ -21,3 +21,9 @@ DerivedData
 Pods
 
 *.pbxproj
+
+*.orig
+
+MHVideoPhotoGallery/MMHVideoPhotoGallery/MHGalleryImageViewerViewController/MHGalleryImageViewerViewController.m.orig
+
+MHVideoPhotoGallery/MMHVideoPhotoGallery/MHGalleryImageViewerViewController/MHGalleryImageViewerViewController.m.orig

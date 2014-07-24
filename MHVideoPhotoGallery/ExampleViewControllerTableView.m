@@ -93,7 +93,7 @@
         [cell.iv sd_setImageWithURL:[NSURL URLWithString:item.URLString]];
     }else{
         [[MHGallerySharedManager sharedManager] startDownloadingThumbImage:item.URLString
-                                                              successBlock:^(UIImage *image, NSUInteger videoDuration, NSError *error) {
+                                                              successBlock:^(UIImage *image, NSUInteger videoDuration, NSError *error, NSURL *imageURL) {
                                                                   cell.iv.image = image;
                                                               }];
     }

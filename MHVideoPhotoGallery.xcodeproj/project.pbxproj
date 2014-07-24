@@ -317,7 +317,6 @@
 		F5245D9118AA16C5004C6FFA /* SDWebImage */ = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
 				F560B37C1973D43C00C5DC2C /* MKAnnotationView+WebCache.h */,
 				F560B37D1973D43C00C5DC2C /* MKAnnotationView+WebCache.m */,
 				F5245D9218AA16D3004C6FFA /* NSData+GIF.h */,
@@ -353,7 +352,6 @@
 				F5245DAA18AA16D3004C6FFA /* UIImageView+WebCache.m */,
 				F560B3841973D43C00C5DC2C /* UIView+WebCacheOperation.h */,
 				F560B3851973D43C00C5DC2C /* UIView+WebCacheOperation.m */,
-=======
 				F531B4A2197911B400361059 /* NSData+ImageContentType.h */,
 				F531B4A3197911B400361059 /* NSData+ImageContentType.m */,
 				F531B4A4197911B400361059 /* SDImageCache.h */,
@@ -383,7 +381,6 @@
 				F531B4BC197911B400361059 /* UIImageView+WebCache.m */,
 				F531B4BD197911B400361059 /* UIView+WebCacheOperation.h */,
 				F531B4BE197911B400361059 /* UIView+WebCacheOperation.m */,
->>>>>>> mario/master
 			);
 			name = SDWebImage;
 			sourceTree = "<group>";
@@ -836,24 +833,18 @@
 				F531B4CB197911B400361059 /* UIImageView+WebCache.m in Sources */,
 				F543E50318EAAF3C008D7590 /* MHGalleryItem.m in Sources */,
 				F543E50E18EACB23008D7590 /* MHOverviewController.m in Sources */,
-<<<<<<< HEAD
 				F560B38A1973D43C00C5DC2C /* UIView+WebCacheOperation.m in Sources */,
 				F5245DB218AA16D3004C6FFA /* SDWebImagePrefetcher.m in Sources */,
-=======
->>>>>>> mario/master
 				F53F925417EB008100A9FE6A /* AppDelegate.m in Sources */,
 				F531B4CA197911B400361059 /* UIImageView+HighlightedWebCache.m in Sources */,
 				F5C52E9318C086E4001E431E /* MHGallery.m in Sources */,
 				F531B4C0197911B400361059 /* SDImageCache.m in Sources */,
 				F5B1AA8A18ED82CE00FE4682 /* SubclassMHImageviewerViewController.m in Sources */,
-<<<<<<< HEAD
 				F560B3861973D43C00C5DC2C /* MKAnnotationView+WebCache.m in Sources */,
 				F560B3871973D43C00C5DC2C /* NSData+ImageContentType.m in Sources */,
 				F5245DB618AA16D3004C6FFA /* UIImageView+WebCache.m in Sources */,
-=======
 				F531B4C9197911B400361059 /* UIImage+MultiFormat.m in Sources */,
 				F531B4C4197911B400361059 /* SDWebImageDownloaderOperation.m in Sources */,
->>>>>>> mario/master
 				F543E51118EB0D25008D7590 /* MHMediaPreviewCollectionViewCell.m in Sources */,
 				F5DBBF31187D584C00BEFE29 /* MHGalleryImageViewerViewController.m in Sources */,
 				F543E50718EAB1D9008D7590 /* MHGallerySharedManager.m in Sources */,
@@ -862,11 +853,8 @@
 				F531B4BF197911B400361059 /* NSData+ImageContentType.m in Sources */,
 				F5F8DA2D18B6A6A100EB25F2 /* MHPresenterImageView.m in Sources */,
 				F5C52E8D18C0828E001E431E /* MHTransitionPresentMHGallery.m in Sources */,
-<<<<<<< HEAD
 				F560B3881973D43C00C5DC2C /* UIImage+WebP.m in Sources */,
 				F5245DAF18AA16D3004C6FFA /* SDWebImageDownloader.m in Sources */,
-=======
->>>>>>> mario/master
 				F536534A1897D11100748466 /* ExampleViewControllerLocal.m in Sources */,
 				F531B4C2197911B400361059 /* SDWebImageDecoder.m in Sources */,
 				F5C52E8E18C0828E001E431E /* MHTransitionShowDetail.m in Sources */,
@@ -875,12 +863,9 @@
 				F5B2EC8017F9D68C000ADC51 /* ExampleViewControllerCollectionViewInTableView.m in Sources */,
 				F531B4C6197911B400361059 /* SDWebImagePrefetcher.m in Sources */,
 				F543E50B18EAB396008D7590 /* MHGalleryController.m in Sources */,
-<<<<<<< HEAD
 				F560B3891973D43C00C5DC2C /* UIImageView+HighlightedWebCache.m in Sources */,
 				F5245DB018AA16D3004C6FFA /* SDWebImageDownloaderOperation.m in Sources */,
-=======
 				F531B4C8197911B400361059 /* UIImage+GIF.m in Sources */,
->>>>>>> mario/master
 				F58F65051880899200D3A8F9 /* MHShareViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

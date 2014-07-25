@@ -43,7 +43,7 @@
         return nil;
     self.URLString = URLString;
     self.thumbnailURL = URLString;
-    self.description = nil;
+    self.descriptionString = nil;
     self.galleryType = galleryType;
     self.descriptionAttributedString = nil;
     self.title = nil;
@@ -65,7 +65,7 @@
         return nil;
     self.URLString = URLString;
     self.thumbnailURL = thumbnailURL;
-    self.description = nil;
+    self.descriptionString = nil;
     self.galleryType = MHGalleryTypeImage;
     self.descriptionAttributedString = nil;
     self.title = nil;

@@ -64,7 +64,8 @@
     MHGalleryItem *vimeo3 = [MHGalleryItem.alloc initWithURL:@"http://vimeo.com/66841007"
                                                  galleryType:MHGalleryTypeVideo];
     
-    MHGalleryItem *landschaft = [MHGalleryItem.alloc initWithURL:@"http://alles-bilder.de/landschaften/HD%20Landschaftsbilder%20(47).jpg"
+    // This GIF will load perfectly on simulator but will crash app on real device most of the time due to memory pressure. SDWebImage is the "cause". FLAnimatedImage is one of the few library out there able to handle it without pressure.
+    MHGalleryItem *landschaft = [MHGalleryItem.alloc initWithURL:@"http://indiegames.com/2014/07/17/ShapeDown%20ArcadeGif.gif"
                                                      galleryType:MHGalleryTypeImage];
     
     MHGalleryItem *landschaft1 = [MHGalleryItem.alloc initWithURL:@"http://de.flash-screen.com/free-wallpaper/bezaubernde-landschaftsabbildung-hd/hd-bezaubernde-landschaftsder-tapete,1920x1200,56420.jpg"

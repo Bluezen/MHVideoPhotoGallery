@@ -135,8 +135,8 @@
     }
     
     [self addChildViewController:self.pageViewController];
-    [self.pageViewController didMoveToParentViewController:self];
     [self.view addSubview:self.pageViewController.view];
+    [self.pageViewController didMoveToParentViewController:self];
     
     self.toolbar = [UIToolbar.alloc initWithFrame:CGRectMake(0, self.view.frame.size.height-MHToolbarHeightForOrientation(self.currentOrientation), self.view.frame.size.width, MHToolbarHeightForOrientation(self.currentOrientation))];
     if(self.currentOrientation == UIInterfaceOrientationLandscapeLeft || self.currentOrientation == UIInterfaceOrientationLandscapeRight){
@@ -531,9 +531,7 @@
     
     if (indexPage ==0) {
         self.leftBarButton.enabled = NO;
-        MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:nil viewController:self];
-        imageViewController.pageIndex = 0;
-        return imageViewController;
+        return nil;
     }
     MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:[self itemForIndex:indexPage-1] viewController:self];
     imageViewController.pageIndex = indexPage-1;
@@ -541,11 +539,6 @@
     return imageViewController;
 }
 
--(MHImageViewController*)imageViewControllerWithItem:(MHGalleryItem*)item pageIndex:(NSInteger)pageIndex{
-    MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:[self itemForIndex:pageIndex] viewController:self];
-    imageViewController.pageIndex  = pageIndex;
-    return imageViewController;
-}
 - (UIViewController *)pageViewController:(UIPageViewController *)pvc viewControllerAfterViewController:(MHImageViewController *)vc{
     
     
@@ -559,9 +552,7 @@
     
     if (indexPage ==self.numberOfGalleryItems-1) {
         self.rightBarButton.enabled = NO;
-        MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:nil viewController:self];
-        imageViewController.pageIndex = self.numberOfGalleryItems-1;
-        return imageViewController;
+        return nil;
     }
     MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:[self itemForIndex:indexPage+1] viewController:self];
     imageViewController.pageIndex  = indexPage+1;
@@ -899,17 +890,20 @@
             }];
             
         }else{
-            [MHGallerySharedManager.sharedManager startDownloadingThumbImage:self.item.URLString
-                                                                successBlock:^(UIImage *image,NSUInteger videoDuration,NSError *error, NSURL *imageURL) {
-                                                                    if (!error) {
-                                                                        [weakSelf handleGeneratedThumb:image
-                                                                                         videoDuration:videoDuration
-                                                                                             urlString:self.item.URLString];
-                                                                    }else{
-                                                                        [weakSelf changeToErrorImage];
-                                                                    }
-                                                                    [weakSelf.act stopAnimating];
-                                                                }];
+            [MHGallerySharedManager.sharedManager
+             startDownloadingThumbImage:self.item.URLString
+             successBlock:^(UIImage *image,NSUInteger videoDuration,NSError *error, NSURL *imageURL)
+            {
+                if (!error) {
+                    [weakSelf handleGeneratedThumb:image
+                                     videoDuration:videoDuration
+                                         urlString:imageURL.absoluteString];
+                }else{
+                    [weakSelf changeToErrorImage];
+                }
+                [weakSelf.act stopAnimating];
+                
+            }];
         }
     }
     

@@ -47,7 +47,7 @@
  *  From which index you want to present the Gallery.
  */
 @property (nonatomic,assign) NSInteger                          presentationIndex;
-@property (nonatomic,strong) UIImageView                        *presentingFromImageView;
+@property (nonatomic,weak)   UIImageView                        *presentingFromImageView;
 @property (nonatomic,strong) MHGalleryImageViewerViewController *imageViewerViewController;
 @property (nonatomic,strong) MHOverviewController               *overViewViewController;
 /**

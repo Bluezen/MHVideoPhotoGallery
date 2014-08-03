@@ -27,8 +27,8 @@
 @property (nonatomic, strong)          UIToolbar *descriptionViewBackground;
 @property (nonatomic)                  NSInteger pageIndex;
 @property (nonatomic, strong)          UIPageViewController *pageViewController;
-@property (nonatomic, strong)          UIImageView *presentingFromImageView;
-@property (nonatomic, strong)          UIImageView *dismissFromImageView;
+@property (nonatomic, weak)            UIImageView *presentingFromImageView;
+@property (nonatomic, weak)            UIImageView *dismissFromImageView;
 @property (nonatomic, strong)          MHTransitionPresentMHGallery *interactivePresentationTranstion;
 @property (nonatomic, strong)          MHTransitionCustomization *transitionCustomization;
 @property (nonatomic,strong)           MHUICustomization *UICustomization;
@@ -48,7 +48,7 @@
 
 @property (nonatomic,strong)        MHTransitionDismissMHGallery *interactiveTransition;
 @property (nonatomic,strong)        MHTransitionShowOverView *interactiveOverView;
-@property (nonatomic,strong)        MHGalleryImageViewerViewController *viewController;
+@property (nonatomic,weak)        MHGalleryImageViewerViewController *viewController;
 @property (nonatomic,strong)        MHGalleryItem *item;
 @property (nonatomic,strong)        UIScrollView *scrollView;
 @property (nonatomic,strong)        UIButton *playButton;

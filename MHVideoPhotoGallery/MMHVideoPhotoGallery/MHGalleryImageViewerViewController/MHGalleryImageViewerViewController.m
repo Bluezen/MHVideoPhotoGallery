@@ -397,6 +397,7 @@
                     [vc stopMovie];
                 }
                 vc.currentTimeMovie =0;
+                [vc removeAllMoviePlayerViewsAndNotifications];
             }
         }
     }

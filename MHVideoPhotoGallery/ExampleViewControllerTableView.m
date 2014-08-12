@@ -8,6 +8,7 @@
 
 #import "ExampleViewControllerTableView.h"
 #import "MHOverviewController.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @implementation ImageTableViewCell
 

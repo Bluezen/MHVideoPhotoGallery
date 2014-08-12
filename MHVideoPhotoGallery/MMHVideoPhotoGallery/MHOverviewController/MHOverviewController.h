@@ -11,7 +11,6 @@
 #import "MHGalleryImageViewerViewController.h"
 #import <SDWebImage/SDWebImageManager.h>
 #import "MHTransitionShowDetail.h"
-#import <SDWebImage/UIImageView+WebCache.h>
 #import "MHMediaPreviewCollectionViewCell.h"
 
 

@@ -133,6 +133,14 @@
                                            animated:NO
                                          completion:nil];
     }
+    // TODO: investiguate why imageViewController can be nil at this point
+    else {
+        // If we don't initialize pageViewController with a viewController before displaying it we might encounter an exception
+        [self.pageViewController setViewControllers:@[[UIViewController new]]
+                                          direction:UIPageViewControllerNavigationDirectionForward
+                                           animated:NO
+                                         completion:nil];
+    }
     
     [self addChildViewController:self.pageViewController];
     [self.view addSubview:self.pageViewController.view];
@@ -290,9 +298,11 @@
         [self.navigationController pushViewController:share
                                              animated:YES];
     }else{
-        UIActivityViewController *act = [UIActivityViewController.alloc initWithActivityItems:@[[(MHImageViewController*)self.pageViewController.viewControllers.firstObject imageView].image] applicationActivities:nil];
-        [self presentViewController:act animated:YES completion:nil];
-        
+        UIImage *imageToShage = [(MHImageViewController*)self.pageViewController.viewControllers.firstObject imageView].image;
+        if (imageToShage != nil) {
+            UIActivityViewController *act = [UIActivityViewController.alloc initWithActivityItems:@[imageToShage] applicationActivities:nil];
+            [self presentViewController:act animated:YES completion:nil];
+        }
     }
 }
 

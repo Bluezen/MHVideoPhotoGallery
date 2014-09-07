@@ -41,9 +41,11 @@
     NSTimeInterval duration = [self transitionDuration:transitionContext];
     
     UIImage *image;
+    UIViewContentMode contentMode;
     for (MHImageViewController *imageViewerIndex in imageViewer.pageViewController.viewControllers) {
         if (imageViewerIndex.pageIndex == imageViewer.pageIndex) {
             image = imageViewerIndex.imageView.image;
+            contentMode = imageViewerIndex.imageView.contentMode;
         }
     }
     if(!image){
@@ -53,7 +55,7 @@
     MHUIImageViewContentViewAnimation *cellImageSnapshot = [MHUIImageViewContentViewAnimation.alloc initWithFrame:fromViewController.view.bounds];
     cellImageSnapshot.image = image;
     [cellImageSnapshot setFrame:AVMakeRectWithAspectRatioInsideRect(cellImageSnapshot.imageMH.size,fromViewController.view.bounds)];
-    cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFit;
+    cellImageSnapshot.contentMode = contentMode;
     
     [imageViewer.pageViewController.view setHidden:YES];
     
@@ -108,9 +110,10 @@
                 
                 if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFit) {
                     cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFit;
-                }
-                if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFill) {
+                } else if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFill) {
                     cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFill;
+                } else if (self.transitionImageView.contentMode == UIViewContentModeCenter) {
+                    cellImageSnapshot.contentMode = UIViewContentModeCenter;
                 }
             } completion:^(BOOL finished) {
                 self.transitionImageView.hidden = NO;
@@ -144,7 +147,7 @@
     }
     
     self.cellImageSnapshot = [MHUIImageViewContentViewAnimation.alloc initWithFrame:fromViewController.view.bounds];
-    self.cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFit;
+    self.cellImageSnapshot.contentMode = imageViewerCurrent.imageView.contentMode;
     
     if(!image){
         image = MHDefaultImageForFrame(fromViewController.view.frame);

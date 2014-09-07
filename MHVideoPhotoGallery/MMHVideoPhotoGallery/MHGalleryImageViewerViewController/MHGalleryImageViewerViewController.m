@@ -537,7 +537,13 @@
     
 }
 
-- (UIViewController *)pageViewController:(UIPageViewController *)pvc viewControllerBeforeViewController:(MHImageViewController *)vc{
+- (UIViewController *)pageViewController:(UIPageViewController *)pvc viewControllerBeforeViewController:(UIViewController *)viewController{
+    
+    if( ![viewController isKindOfClass:[MHImageViewController class]]) {
+        return nil;
+    }
+    
+    MHImageViewController* vc = (MHImageViewController *)viewController;
     
     NSInteger indexPage = vc.pageIndex;
     
@@ -558,8 +564,13 @@
     return imageViewController;
 }
 
-- (UIViewController *)pageViewController:(UIPageViewController *)pvc viewControllerAfterViewController:(MHImageViewController *)vc{
+- (UIViewController *)pageViewController:(UIPageViewController *)pvc viewControllerAfterViewController:(UIViewController *)viewController{
     
+    if( ![viewController isKindOfClass:[MHImageViewController class]]) {
+        return nil;
+    }
+    
+    MHImageViewController* vc = (MHImageViewController *)viewController;
     
     NSInteger indexPage = vc.pageIndex;
     

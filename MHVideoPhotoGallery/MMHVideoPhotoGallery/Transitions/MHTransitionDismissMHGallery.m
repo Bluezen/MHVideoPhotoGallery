@@ -102,18 +102,26 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             self.transitionImageView.hidden = YES;
             
-            [UIView animateWithDuration:duration animations:^{
+            CGFloat animDuration = duration;
+            if (!self.transitionImageView) {
+                animDuration = 0.24;
+            }
+            [UIView animateWithDuration:animDuration animations:^{
                 whiteView.alpha =0;
                 [toViewControllerNC view].alpha = 1;
                 
-                cellImageSnapshot.frame =[containerView convertRect:self.transitionImageView.frame fromView:self.transitionImageView.superview];
-                
-                if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFit) {
-                    cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFit;
-                } else if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFill) {
-                    cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFill;
-                } else if (self.transitionImageView.contentMode == UIViewContentModeCenter) {
-                    cellImageSnapshot.contentMode = UIViewContentModeCenter;
+                if (self.transitionImageView) {
+                    cellImageSnapshot.frame =[containerView convertRect:self.transitionImageView.frame fromView:self.transitionImageView.superview];
+                    
+                    if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFit) {
+                        cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFit;
+                    } else if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFill) {
+                        cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFill;
+                    } else if (self.transitionImageView.contentMode == UIViewContentModeCenter) {
+                        cellImageSnapshot.contentMode = UIViewContentModeCenter;
+                    }
+                } else {
+                    cellImageSnapshot.alpha = 0;
                 }
             } completion:^(BOOL finished) {
                 self.transitionImageView.hidden = NO;
@@ -258,10 +266,26 @@
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         
+        CGRect destFrame = CGRectZero;
+        if (self.transitionImageView) {
+            destFrame = [self.containerView convertRect:self.transitionImageView.frame
+                                               fromView:self.transitionImageView.superview];
+        } else { // no destination image view
+            CGRect superDestBounds = self.cellImageSnapshot.superview.bounds;
+            BOOL dismissFromTop = self.cellImageSnapshot.center.y < (superDestBounds.size.height / 2.0);
+            destFrame = self.cellImageSnapshot.frame;
+            destFrame.origin = CGPointMake(CGRectGetMidX(superDestBounds) - (destFrame.size.width / 2.0),
+                                           CGRectGetMidY(superDestBounds) - (destFrame.size.height / 2.0));
+            if (dismissFromTop)
+                destFrame.origin.y -= superDestBounds.size.height;
+            else
+                destFrame.origin.y += superDestBounds.size.height;
+        }
+        
         if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFill) {
+            
             [self.cellImageSnapshot animateToViewMode:UIViewContentModeScaleAspectFill
-                                             forFrame:[self.containerView convertRect:self.transitionImageView.frame
-                                                                             fromView:self.transitionImageView.superview]
+                                             forFrame:destFrame
                                          withDuration:0.3
                                            afterDelay:0
                                              finished:^(BOOL finished) {
@@ -276,10 +300,10 @@
             self.cellImageSnapshot.layer.cornerRadius = self.transitionImageView.layer.cornerRadius;
             
             if (self.moviePlayer) {
-                self.moviePlayer.view.frame = [self.containerView convertRect:self.transitionImageView.frame fromView:self.transitionImageView.superview];
+                self.moviePlayer.view.frame = destFrame;
             }else{
-                if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFit) {
-                    self.cellImageSnapshot.frame = [self.containerView convertRect:self.transitionImageView.frame fromView:self.transitionImageView.superview];
+                if (!self.transitionImageView || self.transitionImageView.contentMode == UIViewContentModeScaleAspectFit) {
+                    self.cellImageSnapshot.frame = destFrame;
                 }
             }
             
@@ -379,7 +403,7 @@
 
 
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-    return 0.25;
+    return 0.3;
 }
 
 

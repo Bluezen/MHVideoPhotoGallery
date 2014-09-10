@@ -64,7 +64,7 @@
     self = [super init];
     if (self) {
         // Create IO serial queue
-        _ioQueue = dispatch_queue_create("com.marioh.MHGallerySharedManager", DISPATCH_QUEUE_SERIAL);
+        _ioQueue = dispatch_queue_create("com.marioh.MHGallerySharedManager", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }

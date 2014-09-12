@@ -41,7 +41,7 @@
     NSTimeInterval duration = [self transitionDuration:transitionContext];
     
     UIImage *image;
-    UIViewContentMode contentMode;
+    UIViewContentMode contentMode = UIViewContentModeScaleAspectFit;
     for (MHImageViewController *imageViewerIndex in imageViewer.pageViewController.viewControllers) {
         if (imageViewerIndex.pageIndex == imageViewer.pageIndex) {
             image = imageViewerIndex.imageView.image;

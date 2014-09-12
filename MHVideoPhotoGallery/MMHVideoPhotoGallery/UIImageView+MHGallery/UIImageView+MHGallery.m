@@ -64,15 +64,32 @@
             placeholderURL = item.URLString;
         }
         
-        [SDWebImageManager.sharedManager
-         downloadImageWithURL:[NSURL URLWithString:toLoadURL]
-         options:SDWebImageContinueInBackground|SDWebImageTransformAnimatedImage
-         progress:nil
-         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL)
-         {
-             [weakSelf setImage:image imageType:imageType successBlock:succeedBlock];
+        [SDImageCache.sharedImageCache
+         queryDiskCacheForKey:placeholderURL
+         done:^(UIImage *image, SDImageCacheType cacheType) {
              
-         }];
+             if (image != nil)
+             {
+                 if ([placeholderURL isEqualToString:toLoadURL]) {
+                     [weakSelf setImage:image imageType:imageType successBlock:succeedBlock];
+                     return;
+                 } else {
+                     [weakSelf setImage:image imageType:imageType successBlock:nil];
+                 }
+             }
+        
+             [SDWebImageManager.sharedManager
+              downloadImageWithURL:[NSURL URLWithString:toLoadURL]
+              options:SDWebImageContinueInBackground|SDWebImageTransformAnimatedImage
+              progress:nil
+              completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL)
+              {
+                  [weakSelf setImage:image imageType:imageType successBlock:succeedBlock];
+                  
+              }];
+        }];
+        
+        
     }
 }
 

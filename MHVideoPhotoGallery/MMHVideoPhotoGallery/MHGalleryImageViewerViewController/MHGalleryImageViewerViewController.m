@@ -16,7 +16,6 @@
 @end
 
 @interface MHGalleryImageViewerViewController()
-@property (nonatomic, strong) UIActivityViewController *activityViewController;
 @property (nonatomic, strong) UIBarButtonItem          *shareBarButton;
 @property (nonatomic, strong) UIBarButtonItem          *leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem          *rightBarButton;
@@ -302,6 +301,10 @@
         if (imageToShage != nil) {
             UIActivityViewController *act = [UIActivityViewController.alloc initWithActivityItems:@[imageToShage] applicationActivities:nil];
             [self presentViewController:act animated:YES completion:nil];
+            
+            if ([act respondsToSelector:@selector(popoverPresentationController)]) {
+                act.popoverPresentationController.barButtonItem = self.shareBarButton;
+            }
         }
     }
 }

@@ -16,7 +16,6 @@
 @end
 
 @interface MHGalleryImageViewerViewController()
-@property (nonatomic, strong) UIActivityViewController *activityViewController;
 @property (nonatomic, strong) UIBarButtonItem          *shareBarButton;
 @property (nonatomic, strong) UIBarButtonItem          *leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem          *rightBarButton;
@@ -133,10 +132,18 @@
                                            animated:NO
                                          completion:nil];
     }
+    // TODO: investiguate why imageViewController can be nil at this point
+    else {
+        // If we don't initialize pageViewController with a viewController before displaying it we might encounter an exception
+        [self.pageViewController setViewControllers:@[[UIViewController new]]
+                                          direction:UIPageViewControllerNavigationDirectionForward
+                                           animated:NO
+                                         completion:nil];
+    }
     
     [self addChildViewController:self.pageViewController];
-    [self.pageViewController didMoveToParentViewController:self];
     [self.view addSubview:self.pageViewController.view];
+    [self.pageViewController didMoveToParentViewController:self];
     
     self.toolbar = [UIToolbar.alloc initWithFrame:CGRectMake(0, self.view.frame.size.height-MHToolbarHeightForOrientation(self.currentOrientation), self.view.frame.size.width, MHToolbarHeightForOrientation(self.currentOrientation))];
     if(self.currentOrientation == UIInterfaceOrientationLandscapeLeft || self.currentOrientation == UIInterfaceOrientationLandscapeRight){
@@ -290,9 +297,15 @@
         [self.navigationController pushViewController:share
                                              animated:YES];
     }else{
-        UIActivityViewController *act = [UIActivityViewController.alloc initWithActivityItems:@[[(MHImageViewController*)self.pageViewController.viewControllers.firstObject imageView].image] applicationActivities:nil];
-        [self presentViewController:act animated:YES completion:nil];
-        
+        UIImage *imageToShage = [(MHImageViewController*)self.pageViewController.viewControllers.firstObject imageView].image;
+        if (imageToShage != nil) {
+            UIActivityViewController *act = [UIActivityViewController.alloc initWithActivityItems:@[imageToShage] applicationActivities:nil];
+            [self presentViewController:act animated:YES completion:nil];
+            
+            if ([act respondsToSelector:@selector(popoverPresentationController)]) {
+                act.popoverPresentationController.barButtonItem = self.shareBarButton;
+            }
+        }
     }
 }
 
@@ -397,6 +410,7 @@
                     [vc stopMovie];
                 }
                 vc.currentTimeMovie =0;
+                [vc removeAllMoviePlayerViewsAndNotifications];
             }
         }
     }
@@ -466,6 +480,10 @@
     self.rightBarButton.enabled = YES;
     
     MHImageViewController *theCurrentViewController = self.pageViewController.viewControllers.firstObject;
+    if (theCurrentViewController.moviePlayer) {
+        [theCurrentViewController removeAllMoviePlayerViewsAndNotifications];
+    }
+
     NSUInteger indexPage = theCurrentViewController.pageIndex;
     MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:[self itemForIndex:indexPage-1] viewController:self];
     imageViewController.pageIndex = indexPage-1;
@@ -490,6 +508,10 @@
     self.leftBarButton.enabled =YES;
     
     MHImageViewController *theCurrentViewController = self.pageViewController.viewControllers.firstObject;
+    if (theCurrentViewController.moviePlayer) {
+        [theCurrentViewController removeAllMoviePlayerViewsAndNotifications];
+    }
+
     NSUInteger indexPage = theCurrentViewController.pageIndex;
     MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:[self itemForIndex:indexPage+1] viewController:self];
     imageViewController.pageIndex = indexPage+1;
@@ -518,7 +540,13 @@
     
 }
 
-- (UIViewController *)pageViewController:(UIPageViewController *)pvc viewControllerBeforeViewController:(MHImageViewController *)vc{
+- (UIViewController *)pageViewController:(UIPageViewController *)pvc viewControllerBeforeViewController:(UIViewController *)viewController{
+    
+    if( ![viewController isKindOfClass:[MHImageViewController class]]) {
+        return nil;
+    }
+    
+    MHImageViewController* vc = (MHImageViewController *)viewController;
     
     NSInteger indexPage = vc.pageIndex;
     
@@ -531,9 +559,7 @@
     
     if (indexPage ==0) {
         self.leftBarButton.enabled = NO;
-        MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:nil viewController:self];
-        imageViewController.pageIndex = 0;
-        return imageViewController;
+        return nil;
     }
     MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:[self itemForIndex:indexPage-1] viewController:self];
     imageViewController.pageIndex = indexPage-1;
@@ -541,13 +567,13 @@
     return imageViewController;
 }
 
--(MHImageViewController*)imageViewControllerWithItem:(MHGalleryItem*)item pageIndex:(NSInteger)pageIndex{
-    MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:[self itemForIndex:pageIndex] viewController:self];
-    imageViewController.pageIndex  = pageIndex;
-    return imageViewController;
-}
-- (UIViewController *)pageViewController:(UIPageViewController *)pvc viewControllerAfterViewController:(MHImageViewController *)vc{
+- (UIViewController *)pageViewController:(UIPageViewController *)pvc viewControllerAfterViewController:(UIViewController *)viewController{
     
+    if( ![viewController isKindOfClass:[MHImageViewController class]]) {
+        return nil;
+    }
+    
+    MHImageViewController* vc = (MHImageViewController *)viewController;
     
     NSInteger indexPage = vc.pageIndex;
     
@@ -559,9 +585,7 @@
     
     if (indexPage ==self.numberOfGalleryItems-1) {
         self.rightBarButton.enabled = NO;
-        MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:nil viewController:self];
-        imageViewController.pageIndex = self.numberOfGalleryItems-1;
-        return imageViewController;
+        return nil;
     }
     MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:[self itemForIndex:indexPage+1] viewController:self];
     imageViewController.pageIndex  = indexPage+1;
@@ -835,7 +859,7 @@
         if (self.item.galleryType != MHGalleryTypeImage) {
             [self addPlayButtonToView];
             
-            self.moviePlayerToolBarTop = [UIToolbar.alloc initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 44)];
+            self.moviePlayerToolBarTop = [UIToolbar.alloc initWithFrame:CGRectMake(0, self.navigationController.navigationBar.bounds.size.height+([UIApplication sharedApplication].statusBarHidden?0:20), self.view.frame.size.width, 44)];
             self.moviePlayerToolBarTop.autoresizingMask =UIViewAutoresizingFlexibleWidth;
             self.moviePlayerToolBarTop.alpha =0;
             self.moviePlayerToolBarTop.barTintColor = self.viewController.UICustomization.barTintColor;
@@ -899,17 +923,20 @@
             }];
             
         }else{
-            [MHGallerySharedManager.sharedManager startDownloadingThumbImage:self.item.URLString
-                                                                successBlock:^(UIImage *image,NSUInteger videoDuration,NSError *error, NSURL *imageURL) {
-                                                                    if (!error) {
-                                                                        [weakSelf handleGeneratedThumb:image
-                                                                                         videoDuration:videoDuration
-                                                                                             urlString:self.item.URLString];
-                                                                    }else{
-                                                                        [weakSelf changeToErrorImage];
-                                                                    }
-                                                                    [weakSelf.act stopAnimating];
-                                                                }];
+            [MHGallerySharedManager.sharedManager
+             startDownloadingThumbImage:self.item.URLString
+             successBlock:^(UIImage *image,NSUInteger videoDuration,NSError *error, NSURL *imageURL)
+            {
+                if (!error) {
+                    [weakSelf handleGeneratedThumb:image
+                                     videoDuration:videoDuration
+                                         urlString:imageURL.absoluteString];
+                }else{
+                    [weakSelf changeToErrorImage];
+                }
+                [weakSelf.act stopAnimating];
+                
+            }];
         }
     }
     
@@ -1368,10 +1395,10 @@
             }
         }
         
-        self.moviePlayerToolBarTop.frame =CGRectMake(0,64, self.view.frame.size.width, 44);
+        self.moviePlayerToolBarTop.frame =CGRectMake(0,44+([UIApplication sharedApplication].statusBarHidden?0:20), self.view.frame.size.width, 44);
         if (!MHISIPAD) {
             if (UIApplication.sharedApplication.statusBarOrientation != UIInterfaceOrientationPortrait) {
-                self.moviePlayerToolBarTop.frame =CGRectMake(0,52, self.view.frame.size.width, 44);
+                self.moviePlayerToolBarTop.frame =CGRectMake(0,32+([UIApplication sharedApplication].statusBarHidden?0:20), self.view.frame.size.width, 44);
             }
         }
     }
@@ -1518,7 +1545,7 @@
 -(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
                                         duration:(NSTimeInterval)duration{
     if (self.moviePlayerToolBarTop) {
-        self.moviePlayerToolBarTop.frame = CGRectMake(0, self.navigationController.navigationBar.bounds.size.height+20, self.view.frame.size.width,44);
+        self.moviePlayerToolBarTop.frame = CGRectMake(0, self.navigationController.navigationBar.bounds.size.height+([UIApplication sharedApplication].statusBarHidden?0:20), self.view.frame.size.width,44);
         self.leftSliderLabel.frame = CGRectMake(8, 0, 40, 43);
         self.rightSliderLabel.frame = CGRectMake(self.view.frame.size.width-20, 0, 50, 43);
     }

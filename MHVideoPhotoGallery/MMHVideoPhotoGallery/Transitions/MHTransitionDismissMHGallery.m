@@ -41,9 +41,11 @@
     NSTimeInterval duration = [self transitionDuration:transitionContext];
     
     UIImage *image;
+    UIViewContentMode contentMode = UIViewContentModeScaleAspectFit;
     for (MHImageViewController *imageViewerIndex in imageViewer.pageViewController.viewControllers) {
         if (imageViewerIndex.pageIndex == imageViewer.pageIndex) {
             image = imageViewerIndex.imageView.image;
+            contentMode = imageViewerIndex.imageView.contentMode;
         }
     }
     if(!image){
@@ -53,7 +55,7 @@
     MHUIImageViewContentViewAnimation *cellImageSnapshot = [MHUIImageViewContentViewAnimation.alloc initWithFrame:fromViewController.view.bounds];
     cellImageSnapshot.image = image;
     [cellImageSnapshot setFrame:AVMakeRectWithAspectRatioInsideRect(cellImageSnapshot.imageMH.size,fromViewController.view.bounds)];
-    cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFit;
+    cellImageSnapshot.contentMode = contentMode;
     
     [imageViewer.pageViewController.view setHidden:YES];
     
@@ -100,17 +102,26 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             self.transitionImageView.hidden = YES;
             
-            [UIView animateWithDuration:duration animations:^{
+            CGFloat animDuration = duration;
+            if (!self.transitionImageView) {
+                animDuration = 0.24;
+            }
+            [UIView animateWithDuration:animDuration animations:^{
                 whiteView.alpha =0;
                 [toViewControllerNC view].alpha = 1;
                 
-                cellImageSnapshot.frame =[containerView convertRect:self.transitionImageView.frame fromView:self.transitionImageView.superview];
-                
-                if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFit) {
-                    cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFit;
-                }
-                if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFill) {
-                    cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFill;
+                if (self.transitionImageView) {
+                    cellImageSnapshot.frame =[containerView convertRect:self.transitionImageView.frame fromView:self.transitionImageView.superview];
+                    
+                    if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFit) {
+                        cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFit;
+                    } else if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFill) {
+                        cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFill;
+                    } else if (self.transitionImageView.contentMode == UIViewContentModeCenter) {
+                        cellImageSnapshot.contentMode = UIViewContentModeCenter;
+                    }
+                } else {
+                    cellImageSnapshot.alpha = 0;
                 }
             } completion:^(BOOL finished) {
                 self.transitionImageView.hidden = NO;
@@ -144,7 +155,7 @@
     }
     
     self.cellImageSnapshot = [MHUIImageViewContentViewAnimation.alloc initWithFrame:fromViewController.view.bounds];
-    self.cellImageSnapshot.contentMode = UIViewContentModeScaleAspectFit;
+    self.cellImageSnapshot.contentMode = imageViewerCurrent.imageView.contentMode;
     
     if(!image){
         image = MHDefaultImageForFrame(fromViewController.view.frame);
@@ -214,7 +225,7 @@
 -(void)updateInteractiveTransition:(CGFloat)percentComplete{
     [super updateInteractiveTransition:percentComplete];
     self.backView.alpha = 1.1-percentComplete;
-    if (self.moviePlayer) {
+    if (self.moviePlayer.playbackState != MPMoviePlaybackStateStopped && self.moviePlayer.playbackState != MPMoviePlaybackStatePaused) {
         if (self.toTransform != self.orientationTransformBeforeDismiss) {
             if (self.orientationTransformBeforeDismiss <0) {
                 self.moviePlayer.view.center = CGPointMake(self.moviePlayer.view.center.x-self.changedPoint.y, self.moviePlayer.view.center.y+self.changedPoint.x);
@@ -255,10 +266,26 @@
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         
+        CGRect destFrame = CGRectZero;
+        if (self.transitionImageView) {
+            destFrame = [self.containerView convertRect:self.transitionImageView.frame
+                                               fromView:self.transitionImageView.superview];
+        } else { // no destination image view
+            CGRect superDestBounds = self.cellImageSnapshot.superview.bounds;
+            BOOL dismissFromTop = self.cellImageSnapshot.center.y < (superDestBounds.size.height / 2.0);
+            destFrame = self.cellImageSnapshot.frame;
+            destFrame.origin = CGPointMake(CGRectGetMidX(superDestBounds) - (destFrame.size.width / 2.0),
+                                           CGRectGetMidY(superDestBounds) - (destFrame.size.height / 2.0));
+            if (dismissFromTop)
+                destFrame.origin.y -= superDestBounds.size.height;
+            else
+                destFrame.origin.y += superDestBounds.size.height;
+        }
+        
         if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFill) {
+            
             [self.cellImageSnapshot animateToViewMode:UIViewContentModeScaleAspectFill
-                                             forFrame:[self.containerView convertRect:self.transitionImageView.frame
-                                                                             fromView:self.transitionImageView.superview]
+                                             forFrame:destFrame
                                          withDuration:0.3
                                            afterDelay:0
                                              finished:^(BOOL finished) {
@@ -273,10 +300,10 @@
             self.cellImageSnapshot.layer.cornerRadius = self.transitionImageView.layer.cornerRadius;
             
             if (self.moviePlayer) {
-                self.moviePlayer.view.frame = [self.containerView convertRect:self.transitionImageView.frame fromView:self.transitionImageView.superview];
+                self.moviePlayer.view.frame = destFrame;
             }else{
-                if (self.transitionImageView.contentMode == UIViewContentModeScaleAspectFit) {
-                    self.cellImageSnapshot.frame = [self.containerView convertRect:self.transitionImageView.frame fromView:self.transitionImageView.superview];
+                if (!self.transitionImageView || self.transitionImageView.contentMode == UIViewContentModeScaleAspectFit) {
+                    self.cellImageSnapshot.frame = destFrame;
                 }
             }
             
@@ -337,6 +364,10 @@
             [imageViewController.view insertSubview:self.moviePlayer.view atIndex:2];
         }
         
+        if ([self.context respondsToSelector:@selector(viewForKey:)]) { // is on iOS 8?
+            [[UIApplication sharedApplication].keyWindow addSubview:fromViewController.view];
+        }
+        
         [self.context completeTransition:NO];
         
         if (self.moviePlayer) {
@@ -376,7 +407,7 @@
 
 
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-    return 0.25;
+    return 0.3;
 }
 
 

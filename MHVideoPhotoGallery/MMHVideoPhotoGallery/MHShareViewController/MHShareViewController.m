@@ -9,12 +9,12 @@
 #import "MHShareViewController.h"
 #import "MHMediaPreviewCollectionViewCell.h"
 #import "MHGallery.h"
-#import "UIImageView+WebCache.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 #import "MHTransitionShowShareView.h"
 #import <CoreImage/CoreImage.h>
 #import <ImageIO/ImageIO.h>
 #import "MHGallerySharedManagerPrivate.h"
-#import "SDImageCache.h"
+#import <SDWebImage/SDImageCache.h>
 #import <MobileCoreServices/UTCoreTypes.h>
 #import "MHGallery.h"
 

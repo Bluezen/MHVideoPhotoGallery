@@ -64,7 +64,7 @@
     self = [super init];
     if (self) {
         // Create IO serial queue
-        _ioQueue = dispatch_queue_create("com.marioh.MHGallerySharedManager", DISPATCH_QUEUE_SERIAL);
+        _ioQueue = dispatch_queue_create("com.marioh.MHGallerySharedManager", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }
@@ -336,17 +336,20 @@
                                                }else if (self.youtubeThumbQuality == MHYoutubeThumbQualitySQ){
                                                    thumbURL = jsonData[@"data"][@"thumbnail"][@"sqDefault"];
                                                }
-                                               [SDWebImageManager.sharedManager downloadImageWithURL:[NSURL URLWithString:thumbURL]
-                                                                                             options:SDWebImageContinueInBackground
-                                                                                            progress:nil
-                                                                                           completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                                                                               
-                                                                                               [SDImageCache.sharedImageCache removeImageForKey:thumbURL];
-                                                                                               [SDImageCache.sharedImageCache storeImage:image
-                                                                                                                                  forKey:URL];
-                                                                                               
-                                                                                               succeedBlock(image,[jsonData[@"data"][@"duration"] integerValue],nil, [NSURL URLWithString:URL]);
-                                                                                           }];
+                                               [SDWebImageManager.sharedManager
+                                                downloadImageWithURL:[NSURL URLWithString:thumbURL]
+                                                options:SDWebImageContinueInBackground
+                                                progress:nil
+                                                completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL)
+                                               {
+                                                   [SDImageCache.sharedImageCache removeImageForKey:thumbURL];
+                                                   [SDImageCache.sharedImageCache storeImage:image
+                                                                                      forKey:URL];
+                                                   if([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
+                                                   {
+                                                       succeedBlock(image,[jsonData[@"data"][@"duration"] integerValue],nil, [NSURL URLWithString:URL]);
+                                                   }
+                                                }];
                                            }
                                        });
                                    }else{
@@ -372,54 +375,63 @@
         NSMutableURLRequest *httpRequest = [NSMutableURLRequest requestWithURL:vimdeoURL
                                                                    cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                                timeoutInterval:10];
-        [NSURLConnection sendAsynchronousRequest:httpRequest
-                                           queue:NSOperationQueue.new
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                                   if (connectionError) {
-                                       succeedBlock(nil,0,connectionError, nil);
-                                   }else{
-                                       NSError *error;
-                                       NSArray *jsonData = [NSJSONSerialization JSONObjectWithData:data
-                                                                                           options:NSJSONReadingAllowFragments
-                                                                                             error:&error];
-                                       dispatch_async(dispatch_get_main_queue(), ^(void){
-                                           if (jsonData.count) {
-                                               
-                                               NSString *quality = NSString.new;
-                                               if (self.vimeoThumbQuality == MHVimeoThumbQualityLarge) {
-                                                   quality = @"thumbnail_large";
-                                               } else if (self.vimeoThumbQuality == MHVimeoThumbQualityMedium){
-                                                   quality = @"thumbnail_medium";
-                                               }else if(self.vimeoThumbQuality == MHVimeoThumbQualitySmall){
-                                                   quality = @"thumbnail_small";
-                                               }
-                                               if ([jsonData firstObject][quality]) {
-                                                   NSMutableDictionary *dictToSave = [self durationDict];
-                                                   dictToSave[vimdeoURLString] = @([jsonData[0][@"duration"] integerValue]);
-                                                   [self setObjectToUserDefaults:dictToSave];
-                                                   
-                                                   [SDWebImageManager.sharedManager downloadImageWithURL:[NSURL URLWithString:jsonData[0][quality]]
-                                                                                                 options:SDWebImageContinueInBackground
-                                                                                                progress:nil
-                                                                                               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                                                                                   [SDImageCache.sharedImageCache removeImageForKey:jsonData[0][quality]];
-                                                                                                   [SDImageCache.sharedImageCache storeImage:image
-                                                                                                                                      forKey:vimdeoURLString];
-                                                                                                   
-                                                                                                   succeedBlock(image,[jsonData[0][@"duration"] integerValue],nil, [NSURL URLWithString:vimdeoURLString]);
-                                                                                               }];
-                                               }else{
-                                                   succeedBlock(nil,0,nil, nil);
-                                               }
-                                               
-                                           }else{
-                                               succeedBlock(nil,0,nil, nil);
-                                           }
-                                       });
-                                   }
-                                   
-                                   
-                               }];
+        [NSURLConnection
+         sendAsynchronousRequest:httpRequest
+         queue:NSOperationQueue.new
+         completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
+        {
+            if (connectionError) {
+                succeedBlock(nil,0,connectionError, nil);
+            }else{
+                NSError *error;
+                NSArray *jsonData = [NSJSONSerialization JSONObjectWithData:data
+                                                                    options:NSJSONReadingAllowFragments
+                                                                      error:&error];
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    if (jsonData.count) {
+                        
+                        NSString *quality = NSString.new;
+                        if (self.vimeoThumbQuality == MHVimeoThumbQualityLarge) {
+                            quality = @"thumbnail_large";
+                        } else if (self.vimeoThumbQuality == MHVimeoThumbQualityMedium){
+                            quality = @"thumbnail_medium";
+                        }else if(self.vimeoThumbQuality == MHVimeoThumbQualitySmall){
+                            quality = @"thumbnail_small";
+                        }
+                        if ([jsonData firstObject][quality]) {
+                            NSMutableDictionary *dictToSave = [self durationDict];
+                            dictToSave[vimdeoURLString] = @([jsonData[0][@"duration"] integerValue]);
+                            [self setObjectToUserDefaults:dictToSave];
+                            
+                            [SDWebImageManager.sharedManager
+                             downloadImageWithURL:[NSURL URLWithString:jsonData[0][quality]]
+                             options:SDWebImageContinueInBackground
+                             progress:nil
+                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL)
+                            {
+                                [SDImageCache.sharedImageCache removeImageForKey:jsonData[0][quality]];
+                                [SDImageCache.sharedImageCache storeImage:image
+                                                                   forKey:vimdeoURLString];
+                                //
+                                // succeedBlock is likely to perform visual tasks, if it were to be OpenGL tasks while in background (mind the SDWebImageContinueInBackground), the app would crash.
+                                // This fix might not suit everybody needs.
+                                if([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
+                                {
+                                    succeedBlock(image,[jsonData[0][@"duration"] integerValue],nil, [NSURL URLWithString:vimdeoURLString]);
+                                }
+                            }];
+                        }else{
+                            succeedBlock(nil,0,nil, nil);
+                        }
+                        
+                    }else{
+                        succeedBlock(nil,0,nil, nil);
+                    }
+                });
+            }
+            
+            
+        }];
     }
     
 }

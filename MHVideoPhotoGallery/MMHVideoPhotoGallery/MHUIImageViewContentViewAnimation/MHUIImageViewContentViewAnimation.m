@@ -92,11 +92,19 @@
     [self checkImageViewHasImage];
     float ratioImage = (self.imageView.image.size.width)/(self.imageView.image.size.height);
     
+    CGRect imageFrame;
+    
     if ([self choiseFunctionWithRationImg:ratioImage forFrame:self.frame]) {
-        self.imageView.frame = CGRectMake( - (self.frame.size.height * ratioImage - self.frame.size.width) / 2.0f, 0, self.frame.size.height * ratioImage, self.frame.size.height);
+        imageFrame = CGRectMake( - (self.frame.size.height * ratioImage - self.frame.size.width) / 2.0f, 0, self.frame.size.height * ratioImage, self.frame.size.height);
     }else{
-        self.imageView.frame = CGRectMake(0, - (self.frame.size.width / ratioImage - self.frame.size.height) / 2.0f, self.frame.size.width, self.frame.size.width / ratioImage);
+        imageFrame = CGRectMake(0, - (self.frame.size.width / ratioImage - self.frame.size.height) / 2.0f, self.frame.size.width, self.frame.size.width / ratioImage);
     }
+    
+    if (CGRectIsNull(imageFrame) || isnan(imageFrame.origin.x) || isnan(imageFrame.origin.y) || isnan(imageFrame.size.height) || isnan(imageFrame.size.width) ) {
+        imageFrame = CGRectZero;
+    }
+    
+    self.imageView.frame = imageFrame;
     
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     self.changedFrameImage = CGRectMake(0, 0, newFrame.size.width, newFrame.size.height);

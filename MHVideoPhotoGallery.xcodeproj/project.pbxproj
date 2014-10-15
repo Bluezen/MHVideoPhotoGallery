@@ -104,8 +104,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		06548F62D0144BB09B776241 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		3CBCD23FAD991AAE2B0CB409 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		3CC72F4B83884F45ACBC5426 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		803CB66BA4D8DA24D2CF4D20 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		F514263318911D8E0091E3DF /* 707-albums-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "707-albums-selected.png"; sourceTree = "<group>"; };
 		F514263418911D8E0091E3DF /* 707-albums-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "707-albums-selected@2x.png"; sourceTree = "<group>"; };
 		F514263718911D920091E3DF /* 705-photos-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "705-photos-selected.png"; sourceTree = "<group>"; };
@@ -252,6 +253,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		66D09540CBD1F936344BA311 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				803CB66BA4D8DA24D2CF4D20 /* Pods.debug.xcconfig */,
+				3CBCD23FAD991AAE2B0CB409 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		F53F923717EB008100A9FE6A = {
 			isa = PBXGroup;
 			children = (
@@ -259,7 +269,7 @@
 				F53F926817EB008100A9FE6A /* MHVideoPhotoGalleryTests */,
 				F53F924217EB008100A9FE6A /* Frameworks */,
 				F53F924117EB008100A9FE6A /* Products */,
-				06548F62D0144BB09B776241 /* Pods.xcconfig */,
+				66D09540CBD1F936344BA311 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -712,7 +722,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -866,7 +876,7 @@
 		};
 		F53F927317EB008100A9FE6A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 06548F62D0144BB09B776241 /* Pods.xcconfig */;
+			baseConfigurationReference = 803CB66BA4D8DA24D2CF4D20 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -880,7 +890,10 @@
 				GCC_PREFIX_HEADER = "MHVideoPhotoGallery/MHVideoPhotoGallery-Prefix.pch";
 				INFOPLIST_FILE = "MHVideoPhotoGallery/MHVideoPhotoGallery-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"$(inherited)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -890,7 +903,7 @@
 		};
 		F53F927417EB008100A9FE6A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 06548F62D0144BB09B776241 /* Pods.xcconfig */;
+			baseConfigurationReference = 3CBCD23FAD991AAE2B0CB409 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -904,7 +917,10 @@
 				GCC_PREFIX_HEADER = "MHVideoPhotoGallery/MHVideoPhotoGallery-Prefix.pch";
 				INFOPLIST_FILE = "MHVideoPhotoGallery/MHVideoPhotoGallery-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"$(inherited)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";

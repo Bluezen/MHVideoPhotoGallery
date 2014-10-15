@@ -38,6 +38,8 @@ typedef NS_ENUM(NSUInteger, MHBackButtonState) {
 @property (nonatomic)        BOOL showOverView;
 @property (nonatomic)        MHBackButtonState backButtonState;
 
+@property (nonatomic, strong) UIImage *customButtonImage;
+
 @property (nonatomic,strong) UICollectionViewFlowLayout *overViewCollectionViewLayoutLandscape;
 @property (nonatomic,strong) UICollectionViewFlowLayout *overViewCollectionViewLayoutPortrait;
 

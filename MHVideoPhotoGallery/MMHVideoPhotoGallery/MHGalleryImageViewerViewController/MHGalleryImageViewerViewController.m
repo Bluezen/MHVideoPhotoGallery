@@ -20,6 +20,7 @@
 @property (nonatomic, strong) UIBarButtonItem          *leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem          *rightBarButton;
 @property (nonatomic, strong) UIBarButtonItem          *playStopBarButton;
+@property (nonatomic, strong) UIBarButtonItem          *customButton;
 @end
 
 @implementation MHGalleryImageViewerViewController
@@ -175,6 +176,13 @@
                                                                       target:self
                                                                       action:@selector(sharePressed)];
     
+    if (self.UICustomization.customButtonImage) {
+        self.customButton = [UIBarButtonItem.alloc initWithImage:self.UICustomization.customButtonImage
+                                                           style:UIBarButtonItemStyleBordered
+                                                          target:self
+                                                          action:@selector(customButtonPressed)];
+    }
+    
     if (self.UICustomization.hideShare) {
         
         self.shareBarButton = [UIBarButtonItem.alloc initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
@@ -309,6 +317,23 @@
     }
 }
 
+-(void)customButtonPressed{
+    if ([self.galleryViewController.galleryDelegate respondsToSelector:@selector(galleryController:customButtonTouchedAtIndex:)]) {
+        
+        for (MHImageViewController *imageViewController in self.pageViewController.viewControllers) {
+            if (imageViewController.pageIndex == self.pageIndex) {
+                if (imageViewController.isPlayingVideo) {
+                    [imageViewController stopMovie];
+                    [self changeToPlayButton];
+                }
+                break;
+            }
+        }
+        
+        [self.galleryViewController.galleryDelegate galleryController:self.galleryViewController customButtonTouchedAtIndex:self.pageIndex];
+    }
+}
+
 -(void)updateDescriptionLabelForIndex:(NSInteger)index{
     if (index < self.numberOfGalleryItems) {
         MHGalleryItem *item = [self itemForIndex:index];
@@ -436,10 +461,20 @@
         }else{
             [self changeToPlayButton];
         }
-        self.toolbar.items = @[self.shareBarButton,flex,self.leftBarButton,flex,self.playStopBarButton,flex,self.rightBarButton,flex,fixed];
+        
+        if (self.customButton) {
+            self.toolbar.items = @[self.shareBarButton,flex,self.leftBarButton,flex,self.playStopBarButton,flex,self.rightBarButton,flex,self.customButton];
+        } else {
+            self.toolbar.items = @[self.shareBarButton,flex,self.leftBarButton,flex,self.playStopBarButton,flex,self.rightBarButton,flex,fixed];
+        }
+        
         self.playStopBarButton.enabled = YES;
     }else{
-        self.toolbar.items =@[self.shareBarButton,flex,self.leftBarButton,flex,self.rightBarButton,flex,fixed];
+        if (self.customButton) {
+            self.toolbar.items =@[self.shareBarButton,flex,self.leftBarButton,flex,self.rightBarButton,flex,self.customButton];
+        } else {
+            self.toolbar.items =@[self.shareBarButton,flex,self.leftBarButton,flex,self.rightBarButton,flex,fixed];
+        }
     }
 }
 

@@ -42,6 +42,8 @@
                                                                                              @"1":UIColor.whiteColor,
                                                                                              @"2":UIColor.whiteColor}];
         
+        self.customButtonImage = nil;
+        
         CGSize screenSize = UIScreen.mainScreen.bounds.size;
         UICollectionViewFlowLayout *flowLayoutLanscape = UICollectionViewFlowLayout.new;
         flowLayoutLanscape.scrollDirection = UICollectionViewScrollDirectionVertical;

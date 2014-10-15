@@ -18,6 +18,7 @@
 @protocol MHGalleryDelegate<NSObject>
 @optional
 -(void)galleryController:(MHGalleryController*)galleryController didShowIndex:(NSInteger)index;
+-(void)galleryController:(MHGalleryController*)galleryController customButtonTouchedAtIndex:(NSInteger)index;
 @end
 
 @protocol MHGalleryDataSource<NSObject>
